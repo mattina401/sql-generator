@@ -1,0 +1,38 @@
+
+body {
+    padding-top: 70px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+}
+
+.navbar-fixed-top .nav {
+    padding: 15px 0;
+}
+
+.navbar-fixed-top .navbar-brand {
+    padding: 0 15px;
+}
+
+@media (min-width: 768px) {
+    body {
+        padding-top: 100px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+    }
+
+    .navbar-fixed-top .navbar-brand {
+        padding: 15px 0;
+    }
+}
+
+#board {
+    min-height: 500px;
+    border: 1px solid gray;
+}
+
+#result-query {
+    min-height: 100px;
+    border: 1px solid gray;
+}
+
+#tables {
+    border: 1px dashed gray;
+    height: 100px;
+    width: 200px;
+}

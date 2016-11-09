@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sql-generator</title>
+
+    <!--core Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <!--helper css-->
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <!--jquery ui css-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img src="http://placehold.it/150x50&text=Logo" alt="">
+            </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Services</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Database Diagram</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-11" id="board">
+
+            <div id="table">
+
+            </div>
+
+        </div>
+        <div class="col-md-1">
+            <input id="add-tbl" type="button" value="ADD TABLE">
+            <input id="generate" type="button" value="GENERATE">
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-11" id="result-query">
+            <p id="result"> result</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- jQuery -->
+<script src="./js/jquery-3.1.1.js"></script>
+<!-- jQuery-UI -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="./js/bootstrap.js"></script>
+
+<script>
+    $("#add-tbl").click( function() {
+
+        // new table
+        var $element = $('<div class="draggableResizable col-md-3" id="tables"> <input type="text" value="table name"> </div>');
+
+        //append table
+        $("#table").append($element);
+
+        //make it draggable and resizable
+        $element.draggable().resizable();
+
+        return false;
+
+    });
+</script>
+
+
+</body>
+</html>
