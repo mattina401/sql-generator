@@ -59,13 +59,13 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-11" id="board">
+        <form class="col-md-11" id="board">
 
             <div id="table">
 
             </div>
 
-        </div>
+        </form>
         <div class="col-md-1">
             <input id="add-tbl" type="button" value="ADD TABLE">
             <input id="generate" type="button" value="GENERATE">
@@ -91,23 +91,12 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="./js/bootstrap.js"></script>
-
-<script>
-    $("#add-tbl").click( function() {
-
-        // new table
-        var $element = $('<div class="draggableResizable col-md-3" id="tables"> <input type="text" value="table name"> </div>');
-
-        //append table
-        $("#table").append($element);
-
-        //make it draggable and resizable
-        $element.draggable().resizable();
-
-        return false;
-
-    });
-</script>
+<!-- AngularJS -->
+<script src="./js/angular.js"></script>
+<!-- app.js -->
+<script src="./app/app.js"></script>
+<!-- helper.js -->
+<script src="./js/helper.js"></script>
 
 
 </body>
