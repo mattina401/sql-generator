@@ -69,6 +69,10 @@
         <div class="col-md-1">
             <input id="add-tbl" type="button" value="ADD TABLE">
             <input id="generate" type="button" value="GENERATE">
+            <input id="test" type="button" value="TEST">
+
+            <!-- Link to open the modal -->
+            <input id="create-tbl" type="button" value="ADD TABLE">
         </div>
 
     </div>
@@ -85,10 +89,55 @@
 
 
 
+
+<!-- dialog form -->
+<div id="dialog-form" title="Create new table">
+    <p class="validateTips">All form fields are required.</p>
+
+    <form>
+        <fieldset>
+            <label for="tName">Table Name</label>
+            <input type="text" name="tName" id="tName">
+
+            <label for="typeList">Type</label>
+            <select id="typeList">
+            </select>
+
+            <label for="length">Length/Values</label>
+            <input type="text" name="length" id="length">
+
+            <label for="attributesList">Attributes</label>
+            <select id="attributesList">
+            </select>
+
+            <label for="nullCKBox">Null</label>
+            <input type="checkbox" name="nullCKBox" id="nullCKBox">
+
+            <label for="indexList">Index</label>
+            <select id="indexList">
+            </select>
+
+            <label for="aiCKBox">AI</label>
+            <input type="checkbox" name="aiCKBox" id="aiCKBox">
+
+
+            <!-- Allow form submission with keyboard without duplicating the dialog button -->
+            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+    </form>
+</div>
+
+
+
+
+
+
 <!-- jQuery -->
 <script src="./js/jquery-3.1.1.js"></script>
 <!-- jQuery-UI -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- jQuery-cookie -->
+<script src="./js/jquery.cookie.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="./js/bootstrap.js"></script>
 <!-- AngularJS -->

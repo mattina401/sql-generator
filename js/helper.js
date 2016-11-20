@@ -1,19 +1,30 @@
 /**
  * Created by kim on 2016-11-09.
  */
-var tables = {};
 
+var tables = [];
 var tableNum = 1;
+var obj = {}
 
 $("#add-tbl").click(function () {
 
     // new table
-    var $element = $('<div class="draggableResizable col-md-3" id="tables"> <input id ="tempInput" type="text" value="table name"> <input id="tempBtn" type="button" value="add"> </div>');
+    var $element = $('<div class="draggableResizable col-md-3" id="tables"> ' +
+        '<input class="col-sm-6" id ="tempInput" type="text" placeholder="column name"> ' +
+        '<select class="col-sm-4">' +
+        '<option value="INT">INT</option>' +
+        '<option value="VARCHAR">VARCHAR</option>' +
+        '</select>'+
+        '<input class="col-sm-12" id="tempBtn" type="button" value="+"> ' +
+        '</div>');
 
 
-    tables['table' + tableNum] = tableNum;
+    // add table
+    obj.table_id = "table" + tableNum;
+    tables.push(obj);
+
     tableNum = tableNum + 1;
-    console.log(tables);
+
     //append table
     $("#table").append($element);
 
@@ -45,64 +56,93 @@ $("#generate").click(function () {
 
 });
 
-// cookie handler
 
-document.addEventListener("DOMContentLoaded", check, false);
 
-function check() {
-    if (checkCookie("name")) {
-        var name = document.forms["myform"]["name"].value;
-        var comment = document.forms["myform"]["comment"].value;
-        var div = document.createElement("div");
-        var text = document.createTextNode(getCookie("name") + " commented " + getCookie("comment"));
-        div.appendChild(text);
-        document.body.appendChild(text);
+$("#test").click(function () {
+
+    obj.MyGuest={id:{datatype: "int", nullType: true, primary: true}, firstname:{datatype: "string", nullType: false, primary: false}};
+
+
+    console.log(obj);
+
+    //save to cookie
+    $.cookie('obj',  JSON.stringify(obj));
+
+    //get cookie
+    console.log(JSON.parse($.cookie('obj')));
+
+    // remove cookie
+    $.removeCookie('obj');
+
+    //test
+    console.log($.cookie('obj'));
+});
+
+
+
+
+
+// dialog form
+$( function() {
+
+    function createTable() {
+        var tName = $('#tName').val();
+        var typeList = $('#typeList option:selected').text();
+        var length = $('#length').val();
+        var attributes = $('#attributesList option:selected').text();
+        var nullCKBox = $('#nullCKBox').is(':checked');
+        var indexList = $('#indexList option:selected').text();
+        var aiCKBox = $('#aiCKBox').is(':checked');
+
+        console.log(tName + "," + typeList + "," + length + "," + attributes + "," + nullCKBox + "," + indexList + "," + aiCKBox);
     }
-}
 
-function myfunction() {
-    var name = document.forms["myform"]["name"].value;
-    var comment = document.forms["myform"]["comment"].value;
-    var div = document.createElement("div");
-    var text = document.createTextNode(name + " commented " + comment);
-    div.appendChild(text);
-    document.body.appendChild(text);
-    if (!checkCookie("name")) {
-        setCookie("name", name, 365);
-        setCookie("comment", comment, 365);
-    }
-}
 
-function getCookie(c_name) {
-    var c_value = document.cookie;
-    var c_start = c_value.indexOf(" " + c_name + "=");
-    if (c_start == -1) {
-        c_start = c_value.indexOf(c_name + "=");
-    }
-    if (c_start == -1) {
-        c_value = null;
-    } else {
-        c_start = c_value.indexOf("=", c_start) + 1;
-        var c_end = c_value.indexOf(";", c_start);
-        if (c_end == -1) {
-            c_end = c_value.length;
+
+    dialog = $( "#dialog-form" ).dialog({
+        autoOpen: false,
+        height: 400,
+        width: 350,
+        modal: true,
+        buttons: {
+            "Create table" : createTable,
+            Cancel: function() {
+                dialog.dialog( "close" );
+            }
+        },
+        close: function() {
+            form[ 0 ].reset();
         }
-        c_value = unescape(c_value.substring(c_start, c_end));
-    }
-    return c_value;
-}
+    });
 
-function setCookie(c_name, value, exdays) {
-    var exdate = new Date();
-    exdate.setDate(exdate.getDate() + exdays);
-    var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-    document.cookie = c_name + "=" + c_value;
-}
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+        event.preventDefault();
 
-function checkCookie(cookie) {
-    var flag = getCookie(cookie);
-    if (flag != null && flag != "") {
-        return true;
-    }
-    return false;
-}
+    });
+
+    $( "#create-tbl" ).button().on( "click", function() {
+        dialog.dialog( "open" );
+    });
+} );
+
+
+// dropdown list
+
+var tableType = ['INT', 'CHARACTER', 'VARCHAR'];
+var attributes = ['','BINARY', 'UNSIGNED', 'UNSIGNED ZEROFILL', 'on update CURRENT_TIMESTAMP'];
+var indexType = ['','PRIMARY', 'UNIQUE'];
+
+//table type list
+$.each(tableType, function(key, value) {
+    $('#typeList').append($("<option></option>").attr("value", key).text(value));
+});
+
+// attributes type
+$.each(attributes, function(key, value) {
+    $('#attributesList').append($("<option></option>").attr("value", key).text(value));
+});
+
+// index type
+$.each(indexType, function(key, value) {
+    $('#indexList').append($("<option></option>").attr("value", key).text(value));
+});
