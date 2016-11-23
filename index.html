@@ -83,7 +83,11 @@
                     <!-- columns -->
                     <div class="col-sm-12" ng-repeat="item in displayColumn(tableName)">
                         <p class="pull-left">{{item.cName}}: {{item.typeList}}</p>
-                        <a class="glyphicon glyphicon-minus pull-right" aria-hidden="true" ng-click="deleteColumn(tableName,item.cName)"></a>
+                        <a class="glyphicon glyphicon-minus pull-right" aria-hidden="true"
+                           ng-click="deleteColumn(tableName,item.cName)"></a>
+                        <a class="glyphicon glyphicon-pencil pull-right" aria-hidden="true" data-toggle="modal"
+                           data-target=".bs-modal-sm2"
+                           ng-controller="sendTwoController" ng-click="sendtwo(tableName, item.cName)"></a>
                     </div>
                 </div>
             </div>
@@ -111,13 +115,13 @@
 </div>
 
 
-<!-- Modal -->
-<div class="modal fade bs-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+<!-- Modal for add column -->
+<div class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
      aria-hidden="true" ng-controller="colController">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-body">
-                <div id="myTabContent" class="tab-content">
+                <div class="tab-content">
                     <div class="tab-pane fade active in">
                         <form class="form-horizontal">
                             <fieldset>
@@ -173,6 +177,77 @@
         </div>
     </div>
 </div>
+
+
+
+
+<!-- Modal for edit column -->
+<div class="modal fade bs-modal-sm2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+     aria-hidden="true" ng-controller="getTwoController">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade active in">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <label for="ecName">Column Name</label>
+                                <input type="text" name="cName" id="ecName" ng-model="columnInfo.cName" >
+
+                                <label for="etypeList">Type</label>
+                                <select id="etypeList" ng-model="columnInfo.typeList"
+                                        ng-options="item for item in tableType">
+                                </select>
+
+                                <label for="elength">Length/Values</label>
+                                <input type="text" name="length" id="elength" ng-model="columnInfo.length">
+
+                                <label for="eattributesList">Attributes</label>
+                                <select id="eattributesList" ng-model="columnInfo.attributesList"
+                                        ng-options="item for item in attributes">
+                                </select>
+
+                                <label for="enullCKBox">Null</label>
+                                <input type="checkbox" name="nullCKBox" id="enullCKBox" ng-model="columnInfo.nullCKBox"
+                                       ng-true-value="true" ng-false-value="false">
+
+                                <label for="eindexList">Index</label>
+                                <select id="eindexList" ng-model="columnInfo.indexList"
+                                        ng-options="item for item in indexType">
+                                </select>
+
+                                <label for="eaiCKBox">AI</label>
+                                <input type="checkbox" name="aiCKBox" id="eaiCKBox" ng-model="columnInfo.aiCKBox">
+
+
+                                <!-- Button -->
+                                <div class="control-group">
+                                    <label class="control-label" for="addCol"></label>
+                                    <div class="controls">
+                                        <button class="btn btn-success" id="editCol"
+                                                ng-click="editColumn()">
+                                            Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <center>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 
 <!-- jQuery -->

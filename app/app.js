@@ -55,6 +55,10 @@ app.controller('mainController', function ($scope) {
 
     }
 
+    $scope.editColumn = function(tName, cName) {
+
+    }
+
 
     $scope.displayTable = function () {
         $scope.tableList = tableList;
@@ -122,7 +126,7 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
                     indexList: $scope.columnInfo.indexList,
                     aiCKBox: $scope.columnInfo.aiCKBox
                 };
-                //console.log(obj);
+                console.log(obj);
             }
 
         }
@@ -141,6 +145,115 @@ app.factory('dataShare', function ($rootScope) {
     service.sendData = function (data) {
         this.data = data;
         $rootScope.$broadcast('data_shared');
+    };
+    service.getData = function () {
+        return this.data;
+    };
+    return service;
+});
+
+
+
+
+
+// send table Name, column name to share modal
+app.controller('sendTwoController', ['$scope', 'dataSharetwo',
+    function ($scope, dataSharetwo) {
+        $scope.sendtwo = function (tName, cName) {
+
+            var two = {tName:tName, cName:cName}
+
+            dataSharetwo.sendData(two);
+        };
+    }
+]);
+
+app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo',
+
+    function ($scope, $http, $window, dataSharetwo) {
+
+        $scope.tableType = ['INT', 'CHARACTER', 'VARCHAR'];
+        $scope.attributes = ['BINARY', 'UNSIGNED', 'UNSIGNED ZEROFILL', 'on update CURRENT_TIMESTAMP', ''];
+        $scope.indexType = ['PRIMARY', 'UNIQUE', ''];
+
+        //variables
+        $scope.tableName = undefined;
+        $scope.columnName = undefined;
+
+
+        $scope.columnInfo = {
+            cName: undefined,
+            typeList: undefined,
+            length: undefined,
+            attributesList: undefined,
+            nullCKBox: false,
+            indexList: undefined,
+            aiCKBox: false
+        }
+
+
+        $scope.editColumn = function () {
+
+
+            // delete old column name from table list
+            var idx = columnList.indexOf($scope.tableName + $scope.columnName);
+
+            if (idx > -1) {
+                columnList.splice(idx, 1);
+            }
+
+
+            // new column
+            var colName = $scope.tableName + $scope.columnInfo.cName;
+
+            // check there is duplicate column name or not
+            if ($.inArray(colName, columnList) > -1) {
+                alert($scope.columnInfo.cName + " already exists")
+            } else {
+
+                columnList.push(colName);
+                obj[$scope.tableName][$scope.columnInfo.cName] = {
+                    cName: $scope.columnInfo.cName,
+                    typeList: $scope.columnInfo.typeList,
+                    length: $scope.columnInfo.length,
+                    attributesList: $scope.columnInfo.attributesList,
+                    nullCKBox: $scope.columnInfo.nullCKBox,
+                    indexList: $scope.columnInfo.indexList,
+                    aiCKBox: $scope.columnInfo.aiCKBox
+                };
+                console.log(obj);
+
+            }
+
+        }
+
+
+        $scope.$on('data_shared_two', function () {
+            var tName = dataSharetwo.getData().tName;
+            var cName = dataSharetwo.getData().cName;
+            $scope.tableName = tName;
+            $scope.columnName = cName;
+
+            $scope.columnInfo.cName = cName;
+            $scope.columnInfo.typeList = obj[tName][cName].typeList;
+            $scope.columnInfo.length = obj[tName][cName].length;
+            $scope.columnInfo.attributesList = obj[tName][cName].attributesList;
+            $scope.columnInfo.nullCKBox = obj[tName][cName].nullCKBox;
+            $scope.columnInfo.indexList = obj[tName][cName].indexList;
+            $scope.columnInfo.aiCKBox = obj[tName][cName].aiCKBox;
+
+
+
+        });
+    }
+]);
+
+app.factory('dataSharetwo', function ($rootScope) {
+    var service = {};
+    service.data = false;
+    service.sendData = function (data) {
+        this.data = data;
+        $rootScope.$broadcast('data_shared_two');
     };
     service.getData = function () {
         return this.data;
