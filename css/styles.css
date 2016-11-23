@@ -31,10 +31,10 @@ body {
     border: 1px solid gray;
 }
 
-#tables {
+.tables {
     border: 1px dashed gray;
     height: 100px;
-    width: 300px;
+    width: 200px;
 }
 
 fieldset label, input, select {

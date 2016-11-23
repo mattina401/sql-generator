@@ -12,14 +12,15 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 </head>
-<body>
+<body ng-app="myApp" ng-controller="mainController">
 
 <!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -62,12 +63,35 @@
         <form class="col-md-11" id="board">
 
             <div id="table">
+                <div class="tables" data-drag="true" jqyoui-draggable ng-repeat="tableName in tableList">
 
+                    <!--table head-->
+                    <div>
+                        <h4 class="col-sm-6">{{tableName}}</h4>
+
+                        <button type="button" class="btn btn-default col-sm-3" data-toggle="modal"
+                                data-target=".bs-modal-sm"
+                                ng-controller="sendController" ng-click="send(tableName)">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-default col-sm-3" ng-click="deleteTable(tableName)">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+
+                    <!-- columns -->
+                    <div class="col-sm-12" ng-repeat="item in displayColumn(tableName)">
+                        <p class="pull-left">{{item.cName}}: {{item.typeList}}</p>
+                        <a class="glyphicon glyphicon-minus pull-right" aria-hidden="true" ng-click="deleteColumn(tableName,item.cName)"></a>
+                    </div>
+                </div>
             </div>
 
         </form>
         <div class="col-md-1">
-            <input id="add-tbl" type="button" value="ADD TABLE">
+            <input id="tableName" type="text" placeholder="table name" ng-model="tableName">
+            <input id="add-tbl" type="button" value="ADD TABLE" ng-click="createTable(tableName)">
             <input id="generate" type="button" value="GENERATE">
             <input id="test" type="button" value="TEST">
 
@@ -87,49 +111,68 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade bs-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+     aria-hidden="true" ng-controller="colController">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <label for="cName">Column Name</label>
+                                <input type="text" name="cName" id="cName" ng-model="columnInfo.cName">
+
+                                <label for="typeList">Type</label>
+                                <select id="typeList" ng-model="columnInfo.typeList"
+                                        ng-options="item for item in tableType">
+                                </select>
+
+                                <label for="length">Length/Values</label>
+                                <input type="text" name="length" id="length" ng-model="columnInfo.length">
+
+                                <label for="attributesList">Attributes</label>
+                                <select id="attributesList" ng-model="columnInfo.attributesList"
+                                        ng-options="item for item in attributes">
+                                </select>
+
+                                <label for="nullCKBox">Null</label>
+                                <input type="checkbox" name="nullCKBox" id="nullCKBox" ng-model="columnInfo.nullCKBox"
+                                       ng-true-value="true" ng-false-value="false">
+
+                                <label for="indexList">Index</label>
+                                <select id="indexList" ng-model="columnInfo.indexList"
+                                        ng-options="item for item in indexType">
+                                </select>
+
+                                <label for="aiCKBox">AI</label>
+                                <input type="checkbox" name="aiCKBox" id="aiCKBox" ng-model="columnInfo.aiCKBox">
 
 
-
-<!-- dialog form -->
-<div id="dialog-form" title="Create new table">
-    <p class="validateTips">All form fields are required.</p>
-
-    <form>
-        <fieldset>
-            <label for="tName">Table Name</label>
-            <input type="text" name="tName" id="tName">
-
-            <label for="typeList">Type</label>
-            <select id="typeList">
-            </select>
-
-            <label for="length">Length/Values</label>
-            <input type="text" name="length" id="length">
-
-            <label for="attributesList">Attributes</label>
-            <select id="attributesList">
-            </select>
-
-            <label for="nullCKBox">Null</label>
-            <input type="checkbox" name="nullCKBox" id="nullCKBox">
-
-            <label for="indexList">Index</label>
-            <select id="indexList">
-            </select>
-
-            <label for="aiCKBox">AI</label>
-            <input type="checkbox" name="aiCKBox" id="aiCKBox">
-
-
-            <!-- Allow form submission with keyboard without duplicating the dialog button -->
-            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-        </fieldset>
-    </form>
+                                <!-- Button -->
+                                <div class="control-group">
+                                    <label class="control-label" for="addCol"></label>
+                                    <div class="controls">
+                                        <button class="btn btn-success" id="addCol"
+                                                ng-click="addColumn()">
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <center>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </center>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-
-
 
 
 <!-- jQuery -->
@@ -142,10 +185,13 @@
 <script src="./js/bootstrap.js"></script>
 <!-- AngularJS -->
 <script src="./js/angular.js"></script>
+
+<script src="./js/angular-dragdrop.min.js"></script>
 <!-- app.js -->
 <script src="./app/app.js"></script>
+
 <!-- helper.js -->
-<script src="./js/helper.js"></script>
+<!--<script src="./js/helper.js"></script>-->
 
 
 </body>
