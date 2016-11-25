@@ -67,27 +67,27 @@
 
                     <!--table head-->
                     <div>
-                        <h4 class="col-sm-6">{{tableName}}</h4>
+                        <h4 class="col-sm-6">{{tableName.tName}}</h4>
 
                         <button type="button" class="btn btn-default col-sm-3" data-toggle="modal"
                                 data-target=".bs-modal-sm"
-                                ng-controller="sendController" ng-click="send(tableName)">
+                                ng-controller="sendController" ng-click="send(tableName.tName)">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
-                        <button type="button" class="btn btn-default col-sm-3" ng-click="deleteTable(tableName)">
+                        <button type="button" class="btn btn-default col-sm-3" ng-click="deleteTable(tableName.tName)">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         </button>
                     </div>
 
 
                     <!-- columns -->
-                    <div class="col-sm-12" ng-repeat="item in displayColumn(tableName)">
+                    <div class="col-sm-12" ng-repeat="item in displayColumn(tableName.tName)">
                         <p class="pull-left">{{item.cName}}: {{item.typeList}}</p>
                         <a class="glyphicon glyphicon-minus pull-right" aria-hidden="true"
-                           ng-click="deleteColumn(tableName,item.cName)"></a>
+                           ng-click="deleteColumn(tableName.tName,item.cName)"></a>
                         <a class="glyphicon glyphicon-pencil pull-right" aria-hidden="true" data-toggle="modal"
                            data-target=".bs-modal-sm2"
-                           ng-controller="sendTwoController" ng-click="sendtwo(tableName, item.cName)"></a>
+                           ng-controller="sendTwoController" ng-click="sendtwo(tableName.tName, item.cName)"></a>
                     </div>
                 </div>
             </div>
@@ -96,20 +96,34 @@
         <div class="col-md-1">
             <input id="tableName" type="text" placeholder="table name" ng-model="tableName">
             <input id="add-tbl" type="button" value="ADD TABLE" ng-click="createTable(tableName)">
-            <input id="generate" type="button" value="GENERATE">
+            <input id="generate" type="button" value="GENERATE" ng-click="generateSQL()">
             <input id="test" type="button" value="TEST">
 
-            <!-- Link to open the modal -->
-            <input id="create-tbl" type="button" value="ADD TABLE">
         </div>
 
     </div>
 </div>
 
+<!-- query result -->
 <div class="container">
     <div class="row">
         <div class="col-md-11" id="result-query">
-            <p id="result"> result</p>
+            <p ng-repeat="tableName in tableList">CREATE TABLE {{tableName.tName}} <br>
+                (<br>
+                <span ng-repeat="item in getColumns(tableName.tName)">{{item.cName}}&nbsp;{{item.typeList}}<span
+                        ng-show="item.dataLength!=undefined">(</span>{{item.dataLength}}<span
+                        ng-show="item.dataLength!=undefined">)</span>&nbsp;{{item.nullCKBox}}<span
+                        ng-show="!$last">,<br></span>
+                </span>
+                <span ng-if=" tableName.primaryKey.length > 0">,<br>PRIMARY KEY (</span><span
+                        ng-repeat="primaryKey in tableName.primaryKey">{{primaryKey}}<span
+                        ng-show="!$last">,</span></span><span
+                        ng-if=" tableName.primaryKey.length > 0">)</span>
+                <span ng-if=" tableName.uniqueKey.length > 0">,<br>UNIQUE KEY (</span><span
+                        ng-repeat="uniqueKey in tableName.uniqueKey">{{uniqueKey}}<span ng-show="!$last">,</span></span><span
+                        ng-if=" tableName.uniqueKey.length > 0">)</span><br>
+                );
+            </p>
         </div>
     </div>
 </div>
@@ -133,8 +147,8 @@
                                         ng-options="item for item in tableType">
                                 </select>
 
-                                <label for="length">Length/Values</label>
-                                <input type="text" name="length" id="length" ng-model="columnInfo.length">
+                                <label for="dataLength">Length/Values</label>
+                                <input type="text" name="dataLength" id="dataLength" ng-model="columnInfo.dataLength">
 
                                 <label for="attributesList">Attributes</label>
                                 <select id="attributesList" ng-model="columnInfo.attributesList"
@@ -143,7 +157,7 @@
 
                                 <label for="nullCKBox">Null</label>
                                 <input type="checkbox" name="nullCKBox" id="nullCKBox" ng-model="columnInfo.nullCKBox"
-                                       ng-true-value="true" ng-false-value="false">
+                                       ng-true-value="'NULL'" ng-false-value="'NOT NULL'">
 
                                 <label for="indexList">Index</label>
                                 <select id="indexList" ng-model="columnInfo.indexList"
@@ -179,8 +193,6 @@
 </div>
 
 
-
-
 <!-- Modal for edit column -->
 <div class="modal fade bs-modal-sm2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
      aria-hidden="true" ng-controller="getTwoController">
@@ -192,15 +204,15 @@
                         <form class="form-horizontal">
                             <fieldset>
                                 <label for="ecName">Column Name</label>
-                                <input type="text" name="cName" id="ecName" ng-model="columnInfo.cName" >
+                                <input type="text" name="cName" id="ecName" ng-model="columnInfo.cName">
 
                                 <label for="etypeList">Type</label>
                                 <select id="etypeList" ng-model="columnInfo.typeList"
                                         ng-options="item for item in tableType">
                                 </select>
 
-                                <label for="elength">Length/Values</label>
-                                <input type="text" name="length" id="elength" ng-model="columnInfo.length">
+                                <label for="edataLength">Length/Values</label>
+                                <input type="text" name="dataLength" id="edataLength" ng-model="columnInfo.dataLength">
 
                                 <label for="eattributesList">Attributes</label>
                                 <select id="eattributesList" ng-model="columnInfo.attributesList"
@@ -209,7 +221,7 @@
 
                                 <label for="enullCKBox">Null</label>
                                 <input type="checkbox" name="nullCKBox" id="enullCKBox" ng-model="columnInfo.nullCKBox"
-                                       ng-true-value="true" ng-false-value="false">
+                                       ng-true-value="'NULL'" ng-false-value="'NOT NULL'">
 
                                 <label for="eindexList">Index</label>
                                 <select id="eindexList" ng-model="columnInfo.indexList"
@@ -243,11 +255,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
 
 
 <!-- jQuery -->

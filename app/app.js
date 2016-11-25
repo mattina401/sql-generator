@@ -1,7 +1,7 @@
 var app = angular.module("myApp", ['ngDragDrop']);
 
-var tableList = [];
-var columnList =[];
+var tableList = {};
+var columnList = [];
 var obj = {};
 
 app.controller('mainController', function ($scope) {
@@ -11,13 +11,17 @@ app.controller('mainController', function ($scope) {
         // check table name already exists or not
         if ($.inArray(tName, tableList) > -1) {
             alert(tName + " already exists")
-        } else if(tName === undefined) {
+        } else if (tName === undefined) {
             alert("please type table name")
         }
         else {
             // add table name to tableList
-            tableList.push(tName);
+            //var table = {tName: {primaryKey: [], uniqueKey: []}}
+            //tableList.push(table);
             //console.log(tableList);
+
+            tableList[tName] = {tName: tName, primaryKey: [], uniqueKey: []}
+
 
             obj[tName] = {
                 //tableName: tName
@@ -25,7 +29,7 @@ app.controller('mainController', function ($scope) {
         }
     }
 
-    $scope.deleteTable = function(tName) {
+    $scope.deleteTable = function (tName) {
 
         // delete table from table list
         var idx = tableList.indexOf(tName);
@@ -39,13 +43,13 @@ app.controller('mainController', function ($scope) {
 
     }
 
-    $scope.deleteColumn = function(tName, cName) {
+    $scope.deleteColumn = function (tName, cName) {
         //console.log(cName);
         //console.log(obj);
         delete obj[tName][cName];
 
         // delete column from column list
-        var idx = columnList.indexOf(tName+cName);
+        var idx = columnList.indexOf(tName + cName);
 
         if (idx > -1) {
             columnList.splice(idx, 1);
@@ -55,8 +59,8 @@ app.controller('mainController', function ($scope) {
 
     }
 
-    $scope.editColumn = function(tName, cName) {
-
+    $scope.getColumns = function (tName) {
+        return obj[tName];
     }
 
 
@@ -64,8 +68,7 @@ app.controller('mainController', function ($scope) {
         $scope.tableList = tableList;
     }
 
-    $scope.displayColumn = function(tName) {
-
+    $scope.displayColumn = function (tName) {
         return obj[tName];
     }
 
@@ -97,9 +100,9 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
         $scope.columnInfo = {
             cName: undefined,
             typeList: undefined,
-            length: undefined,
+            dataLength: undefined,
             attributesList: undefined,
-            nullCKBox: false,
+            nullCKBox: "NOT NULL",
             indexList: undefined,
             aiCKBox: false
         }
@@ -116,17 +119,32 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
                 alert($scope.columnInfo.cName + " already exists")
             } else {
 
-                columnList.push(colName);
-                obj[$scope.tableName][$scope.columnInfo.cName] = {
-                    cName: $scope.columnInfo.cName,
-                    typeList: $scope.columnInfo.typeList,
-                    length: $scope.columnInfo.length,
-                    attributesList: $scope.columnInfo.attributesList,
-                    nullCKBox: $scope.columnInfo.nullCKBox,
-                    indexList: $scope.columnInfo.indexList,
-                    aiCKBox: $scope.columnInfo.aiCKBox
-                };
-                console.log(obj);
+
+                if ($scope.columnInfo.nullCKBox == "NULL" && $scope.columnInfo.indexList == "PRIMARY") {
+                    alert("Primary key cannot be NULL")
+                } else {
+
+                    if($scope.columnInfo.indexList == "PRIMARY") {
+                        tableList[$scope.tableName].primaryKey.push($scope.columnInfo.cName);
+                    } else if ($scope.columnInfo.indexList == "UNIQUE") {
+                        tableList[$scope.tableName].uniqueKey.push($scope.columnInfo.cName);
+                    }
+
+                    columnList.push(colName);
+
+                    obj[$scope.tableName][$scope.columnInfo.cName] = {
+                        cName: $scope.columnInfo.cName,
+                        typeList: $scope.columnInfo.typeList,
+                        dataLength: $scope.columnInfo.dataLength,
+                        attributesList: $scope.columnInfo.attributesList,
+                        nullCKBox: $scope.columnInfo.nullCKBox,
+                        indexList: $scope.columnInfo.indexList,
+                        aiCKBox: $scope.columnInfo.aiCKBox
+                    };
+
+                    console.log(obj);
+                    console.log(tableList);
+                }
             }
 
         }
@@ -153,15 +171,12 @@ app.factory('dataShare', function ($rootScope) {
 });
 
 
-
-
-
 // send table Name, column name to share modal
 app.controller('sendTwoController', ['$scope', 'dataSharetwo',
     function ($scope, dataSharetwo) {
         $scope.sendtwo = function (tName, cName) {
 
-            var two = {tName:tName, cName:cName}
+            var two = {tName: tName, cName: cName}
 
             dataSharetwo.sendData(two);
         };
@@ -184,9 +199,9 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
         $scope.columnInfo = {
             cName: undefined,
             typeList: undefined,
-            length: undefined,
+            dataLength: undefined,
             attributesList: undefined,
-            nullCKBox: false,
+            nullCKBox: "NOT NULL",
             indexList: undefined,
             aiCKBox: false
         }
@@ -215,7 +230,7 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
                 obj[$scope.tableName][$scope.columnInfo.cName] = {
                     cName: $scope.columnInfo.cName,
                     typeList: $scope.columnInfo.typeList,
-                    length: $scope.columnInfo.length,
+                    dataLength: $scope.columnInfo.dataLength,
                     attributesList: $scope.columnInfo.attributesList,
                     nullCKBox: $scope.columnInfo.nullCKBox,
                     indexList: $scope.columnInfo.indexList,
@@ -236,12 +251,11 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
 
             $scope.columnInfo.cName = cName;
             $scope.columnInfo.typeList = obj[tName][cName].typeList;
-            $scope.columnInfo.length = obj[tName][cName].length;
+            $scope.columnInfo.dataLength = obj[tName][cName].dataLength;
             $scope.columnInfo.attributesList = obj[tName][cName].attributesList;
             $scope.columnInfo.nullCKBox = obj[tName][cName].nullCKBox;
             $scope.columnInfo.indexList = obj[tName][cName].indexList;
             $scope.columnInfo.aiCKBox = obj[tName][cName].aiCKBox;
-
 
 
         });
