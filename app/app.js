@@ -74,6 +74,7 @@ app.controller('mainController', function ($scope) {
 
     $scope.displayTable();
 
+
 });
 
 
@@ -124,7 +125,7 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
                     alert("Primary key cannot be NULL")
                 } else {
 
-                    if($scope.columnInfo.indexList == "PRIMARY") {
+                    if ($scope.columnInfo.indexList == "PRIMARY") {
                         tableList[$scope.tableName].primaryKey.push($scope.columnInfo.cName);
                     } else if ($scope.columnInfo.indexList == "UNIQUE") {
                         tableList[$scope.tableName].uniqueKey.push($scope.columnInfo.cName);
@@ -144,6 +145,9 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
 
                     console.log(obj);
                     console.log(tableList);
+
+                    angular.element('.modal').modal('hide');
+
                 }
             }
 
@@ -210,6 +214,14 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
         $scope.editColumn = function () {
 
 
+
+            // if user change column name
+            if ($scope.columnName != $scope.columnInfo.cName) {
+
+                // delete old column in obj
+                delete  obj[$scope.tableName][$scope.columnName];
+            }
+
             // delete old column name from table list
             var idx = columnList.indexOf($scope.tableName + $scope.columnName);
 
@@ -226,22 +238,56 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
                 alert($scope.columnInfo.cName + " already exists")
             } else {
 
-                columnList.push(colName);
-                obj[$scope.tableName][$scope.columnInfo.cName] = {
-                    cName: $scope.columnInfo.cName,
-                    typeList: $scope.columnInfo.typeList,
-                    dataLength: $scope.columnInfo.dataLength,
-                    attributesList: $scope.columnInfo.attributesList,
-                    nullCKBox: $scope.columnInfo.nullCKBox,
-                    indexList: $scope.columnInfo.indexList,
-                    aiCKBox: $scope.columnInfo.aiCKBox
-                };
-                console.log(obj);
+                // primary key cannot be null
+                if ($scope.columnInfo.nullCKBox == "NULL" && $scope.columnInfo.indexList == "PRIMARY") {
+                    alert("Primary key cannot be NULL")
+                } else {
 
+                    if ($scope.columnInfo.indexList == "PRIMARY") {
+
+                        var idx = tableList[$scope.tableName].primaryKey.indexOf($scope.columnInfo.cName);
+
+                        if (idx < 0) {
+                            tableList[$scope.tableName].primaryKey.push($scope.columnInfo.cName);
+                        }
+
+                    } else if ($scope.columnInfo.indexList == "UNIQUE") {
+
+                        var idx = tableList[$scope.tableName].uniqueKey.indexOf($scope.columnInfo.cName);
+
+                        if (idx < 0) {
+                            tableList[$scope.tableName].uniqueKey.push($scope.columnInfo.cName);
+                        }
+                    } else if ($scope.columnInfo.indexList == "" || $scope.columnInfo.indexList == undefined) {
+                        var idx_primary = tableList[$scope.tableName].primaryKey.indexOf($scope.columnInfo.cName);
+                        var idx_unique = tableList[$scope.tableName].uniqueKey.indexOf($scope.columnInfo.cName);
+
+                        if (idx_primary > -1) {
+                            tableList[$scope.tableName].primaryKey.splice(idx_primary, 1);
+
+                        } else if (idx_unique > -1) {
+                            tableList[$scope.tableName].uniqueKey.splice(idx_unique, 1);
+
+                        }
+                    }
+
+
+                    columnList.push(colName);
+                    obj[$scope.tableName][$scope.columnInfo.cName] = {
+                        cName: $scope.columnInfo.cName,
+                        typeList: $scope.columnInfo.typeList,
+                        dataLength: $scope.columnInfo.dataLength,
+                        attributesList: $scope.columnInfo.attributesList,
+                        nullCKBox: $scope.columnInfo.nullCKBox,
+                        indexList: $scope.columnInfo.indexList,
+                        aiCKBox: $scope.columnInfo.aiCKBox
+                    };
+                    console.log(obj);
+                    angular.element('.modal').modal('hide');
+                }
             }
 
         }
-
 
         $scope.$on('data_shared_two', function () {
             var tName = dataSharetwo.getData().tName;
@@ -274,3 +320,49 @@ app.factory('dataSharetwo', function ($rootScope) {
     };
     return service;
 });
+
+
+
+
+
+/*jsPlumb*/
+/*
+jsPlumb.ready(function () {
+    jsPlumb.setContainer("diagramContainer");
+
+    var common = {
+        isSource: true,
+        isTarget: true,
+        connector: ["Flowchart"]
+    };
+
+    jsPlumb.addEndpoint("item_left", {
+        anchors: "Right"
+    }, common);
+
+    jsPlumb.addEndpoint("item_right", {
+        anchor: "Left"
+    }, common);
+
+
+
+
+    jsPlumb.bind("connection", function (info) {
+        console.log(info);
+        //console.log(info.sourceId);
+        //console.log(info.source);
+    });
+
+
+    jsPlumb.bind("connectionDetached", function (info) {
+        console.log(info);
+
+    });
+
+
+    jsPlumb.draggable("item_left");
+    jsPlumb.draggable("item_right");
+
+
+});
+*/

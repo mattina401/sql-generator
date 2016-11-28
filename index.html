@@ -62,7 +62,7 @@
     <div class="row">
         <form class="col-md-11" id="board">
 
-            <div id="table">
+            <div id="table" style="border: 1px solid blue">
                 <div class="tables" data-drag="true" jqyoui-draggable ng-repeat="tableName in tableList">
 
                     <!--table head-->
@@ -81,16 +81,20 @@
 
 
                     <!-- columns -->
-                    <div class="col-sm-12" ng-repeat="item in displayColumn(tableName.tName)">
+                    <div class="col-sm-12 columns" ng-repeat="item in displayColumn(tableName.tName)">
                         <p class="pull-left">{{item.cName}}: {{item.typeList}}</p>
                         <a class="glyphicon glyphicon-minus pull-right" aria-hidden="true"
                            ng-click="deleteColumn(tableName.tName,item.cName)"></a>
                         <a class="glyphicon glyphicon-pencil pull-right" aria-hidden="true" data-toggle="modal"
                            data-target=".bs-modal-sm2"
                            ng-controller="sendTwoController" ng-click="sendtwo(tableName.tName, item.cName)"></a>
+
                     </div>
                 </div>
             </div>
+
+
+
 
         </form>
         <div class="col-md-1">
@@ -98,7 +102,7 @@
             <input id="add-tbl" type="button" value="ADD TABLE" ng-click="createTable(tableName)">
             <input id="generate" type="button" value="GENERATE" ng-click="generateSQL()">
             <input id="test" type="button" value="TEST">
-
+            <input type="button" id="jsplumb" value="jsplumb">
         </div>
 
     </div>
@@ -113,6 +117,7 @@
                 <span ng-repeat="item in getColumns(tableName.tName)">{{item.cName}}&nbsp;{{item.typeList}}<span
                         ng-show="item.dataLength!=undefined">(</span>{{item.dataLength}}<span
                         ng-show="item.dataLength!=undefined">)</span>&nbsp;{{item.nullCKBox}}<span
+                        ng-show="item.aiCKBox">&nbsp;AUTO_INCREMENT</span><span
                         ng-show="!$last">,<br></span>
                 </span>
                 <span ng-if=" tableName.primaryKey.length > 0">,<br>PRIMARY KEY (</span><span
@@ -128,7 +133,30 @@
     </div>
 </div>
 
+<!--
+<style>
+    #diagramContainer {
+        padding: 20px;
+        width: 80%;
+        height: 400px;
+        border: 1px solid gray;
+    }
 
+    .item {
+        position: absolute;
+        height: 80px;
+        width: 80px;
+        border: 1px solid blue;
+    }
+</style>
+-->
+<!--
+<div id="diagramContainer">
+    <div id="item_left" class="item"></div>
+    <div id="item_right" class="item" style="left:150px;"></div>
+</div>
+
+-->
 <!-- Modal for add column -->
 <div class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
      aria-hidden="true" ng-controller="colController">
@@ -269,11 +297,26 @@
 <script src="./js/angular.js"></script>
 
 <script src="./js/angular-dragdrop.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<!-- jsPlumb -->
+<script src="js/jsPlumb-2.2.6-min.js"></script>
+
+
 <!-- app.js -->
 <script src="./app/app.js"></script>
 
+
 <!-- helper.js -->
-<!--<script src="./js/helper.js"></script>-->
+<script src="./js/helper.js"></script>
+
+
+<!--reset modal-->
+<script>
+    $('.modal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
+</script>
 
 
 </body>

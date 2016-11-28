@@ -32,10 +32,16 @@ body {
 }
 
 .tables {
+    position: absolute;
     border: 1px dashed gray;
     height: 100px;
     width: 200px;
 }
+
+#table {
+    position: absolute;
+}
+
 
 fieldset label, input, select {
     display: block;
