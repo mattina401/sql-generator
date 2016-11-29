@@ -32,11 +32,7 @@ app.controller('mainController', function ($scope) {
     $scope.deleteTable = function (tName) {
 
         // delete table from table list
-        var idx = tableList.indexOf(tName);
-
-        if (idx > -1) {
-            tableList.splice(idx, 1);
-        }
+        delete tableList[tName];
 
         // delete table from obj
         delete obj[tName];
@@ -60,16 +56,22 @@ app.controller('mainController', function ($scope) {
     }
 
     $scope.getColumns = function (tName) {
+
         return obj[tName];
     }
-
 
     $scope.displayTable = function () {
         $scope.tableList = tableList;
     }
 
     $scope.displayColumn = function (tName) {
+
         return obj[tName];
+    }
+
+
+    $scope.clear = function() {
+        jsPlumb.detachEveryConnection();
     }
 
     $scope.displayTable();
@@ -105,7 +107,10 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
             attributesList: undefined,
             nullCKBox: "NOT NULL",
             indexList: undefined,
-            aiCKBox: false
+            aiCKBox: false,
+            referTable: undefined,
+            referColumn : undefined
+
         }
 
 
@@ -140,7 +145,10 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
                         attributesList: $scope.columnInfo.attributesList,
                         nullCKBox: $scope.columnInfo.nullCKBox,
                         indexList: $scope.columnInfo.indexList,
-                        aiCKBox: $scope.columnInfo.aiCKBox
+                        aiCKBox: $scope.columnInfo.aiCKBox,
+                        referTable: undefined,
+                        referColumn : undefined
+
                     };
 
                     console.log(obj);
@@ -207,7 +215,10 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
             attributesList: undefined,
             nullCKBox: "NOT NULL",
             indexList: undefined,
-            aiCKBox: false
+            aiCKBox: false,
+            referTable: undefined,
+            referColumn : undefined
+
         }
 
 
@@ -280,7 +291,10 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
                         attributesList: $scope.columnInfo.attributesList,
                         nullCKBox: $scope.columnInfo.nullCKBox,
                         indexList: $scope.columnInfo.indexList,
-                        aiCKBox: $scope.columnInfo.aiCKBox
+                        aiCKBox: $scope.columnInfo.aiCKBox,
+                        referTable: undefined,
+                        referColumn : undefined
+
                     };
                     console.log(obj);
                     angular.element('.modal').modal('hide');
@@ -326,9 +340,8 @@ app.factory('dataSharetwo', function ($rootScope) {
 
 
 /*jsPlumb*/
-/*
-jsPlumb.ready(function () {
-    jsPlumb.setContainer("diagramContainer");
+$("#jsplumb").click(function() {
+    jsPlumb.setContainer("board");
 
     var common = {
         isSource: true,
@@ -336,33 +349,73 @@ jsPlumb.ready(function () {
         connector: ["Flowchart"]
     };
 
-    jsPlumb.addEndpoint("item_left", {
+
+
+    jsPlumb.addEndpoint($(".columns"), {
         anchors: "Right"
     }, common);
 
-    jsPlumb.addEndpoint("item_right", {
+    jsPlumb.addEndpoint($(".columns"), {
         anchor: "Left"
     }, common);
 
 
-
-
-    jsPlumb.bind("connection", function (info) {
-        console.log(info);
+    jsPlumb.bind("connection", function(info) {
+        //console.log(info);
         //console.log(info.sourceId);
-        //console.log(info.source);
+        //console.log(info.source.innerText);
+
+        console.log(info.source.title)
+
+
+        var sourceCol = jsPlumb.getColName(info.source.innerText);
+        var targetCol = jsPlumb.getColName(info.target.innerText);
+
+        //console.log("sourceCol: " + sourceCol + ",targetCol: "+targetCol);
+
+        obj[info.source.title][sourceCol].referTable = info.target.title;
+        obj[info.source.title][sourceCol].referColumn = targetCol;
+
+
+        //foreignKey[info.sourceId][sourceCol] = {referTable: info.targetId, referColumn: targetCol};
+
+        console.log(obj);
+
+
+
+    });
+
+    jsPlumb.bind("connectionDetached", function(info) {
+
+        var sourceCol = jsPlumb.getColName(info.source.innerText);
+
+        obj[info.source.title][sourceCol].referTable = undefined;
+        obj[info.source.title][sourceCol].referColumn = undefined;
+
+
+        console.log(obj);
+
+
     });
 
 
-    jsPlumb.bind("connectionDetached", function (info) {
-        console.log(info);
+    jsPlumb.getColName = function(txt) {
+        var colName = "";
+        var end = txt.length;
+        var i = 0;
+        while(txt[i] != ":") {
+            colName = colName + txt[i];
+            i++;
+            if(i==end) {
+                break;
+            }
+        }
 
-    });
+        return colName;
+    }
 
+    jsPlumb.draggable($(".tables"));
 
-    jsPlumb.draggable("item_left");
-    jsPlumb.draggable("item_right");
 
 
 });
-*/
