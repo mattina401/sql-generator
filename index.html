@@ -5,9 +5,9 @@
     <title>sql-generator</title>
 
     <!--core Bootstrap css-->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
     <!--helper css-->
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
     <!--jquery ui css-->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
@@ -59,9 +59,9 @@
     </div>
 </div>
 -->
-<div class="container">
+<div class="container" id="main">
     <div class="row">
-        <form class="col-md-11 col-sm-11" id="board">
+        <form class="" id="board">
 
             <div id="table">
                 <div class="tables" data-drag="true" jqyoui-draggable ng-repeat="tableName in tableList">
@@ -97,17 +97,20 @@
 
 
         </form>
-        <div class="col-md-1 col-sm-1">
-            <input id="tableName" type="text" placeholder="table name" ng-model="tableName">
-            <input id="add-tbl" type="button" value="ADD TABLE" ng-click="createTable(tableName)">
-            <input id="generate" type="button" value="GENERATE" ng-click="generate=!generate ">
+        <div class="" id="controller">
+            <input class="controller-input" id="tableName" type="text" placeholder="table name" ng-model="tableName">
+            <input class="controller-btn" id="add-tbl" type="button" value="ADD TABLE" ng-click="createTable(tableName)">
+            <input class="controller-btn" id="generate" type="button" value="GENERATE" ng-click="generate=!generate ">
             <!--<input id="test" type="button" value="TEST">-->
-            <input type="button" id="jsplumb" value="node">
-            <input type="button" value="clear" ng-click="clear()">
+            <input class="controller-btn" type="button" id="jsplumb" value="visible node">
+            <input class="controller-btn" type="button" value="clear node" ng-click="clear()">
         </div>
 
     </div>
 </div>
+
+
+
 
 <!-- query result -->
 <div class="container" ng-init="generate=false;" ng-if="generate">
@@ -265,6 +268,15 @@
         </div>
     </div>
 </div>
+
+
+
+<footer class="blog-footer">
+    <p>© 2016 Rex Kim ALL RIGHTS RESERVED</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
 
 
 <!-- jQuery -->

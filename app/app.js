@@ -93,7 +93,7 @@ app.controller('colController', ['$scope', '$http', '$window', 'dataShare',
 
     function ($scope, $http, $window, dataShare) {
 
-        $scope.tableType = ['INT', 'CHARACTER', 'VARCHAR'];
+        $scope.tableType = ['INT', 'TEXT', 'VARCHAR','CHARACTER','DATE','TIME','TIMESTAMP', 'BINARY', 'BOOLEAN','BIGINT','DECIMAL','NUMERIC','FLOAT'];
         $scope.attributes = ['BINARY', 'UNSIGNED', 'UNSIGNED ZEROFILL', 'on update CURRENT_TIMESTAMP', ''];
         $scope.indexType = ['PRIMARY', 'UNIQUE', ''];
 
@@ -199,7 +199,7 @@ app.controller('getTwoController', ['$scope', '$http', '$window', 'dataSharetwo'
 
     function ($scope, $http, $window, dataSharetwo) {
 
-        $scope.tableType = ['INT', 'CHARACTER', 'VARCHAR'];
+        $scope.tableType = ['INT', 'TEXT', 'VARCHAR','CHARACTER','DATE','TIME','TIMESTAMP', 'BINARY', 'BOOLEAN','BIGINT','DECIMAL','NUMERIC','FLOAT'];
         $scope.attributes = ['BINARY', 'UNSIGNED', 'UNSIGNED ZEROFILL', 'on update CURRENT_TIMESTAMP', ''];
         $scope.indexType = ['PRIMARY', 'UNIQUE', ''];
 
@@ -343,21 +343,111 @@ app.factory('dataSharetwo', function ($rootScope) {
 $("#jsplumb").click(function() {
     jsPlumb.setContainer("board");
 
-    var common = {
-        isSource: true,
-        isTarget: true,
-        connector: ["Flowchart"]
+
+    var instance = window.jsp = jsPlumb.getInstance({
+        // default drag options
+        DragOptions: { cursor: 'pointer', zIndex: 2000 },
+        // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
+        // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
+        ConnectionOverlays: [
+            [ "Arrow", {
+                location: 1,
+                visible:true,
+                width:11,
+                length:11,
+                id:"ARROW",
+            } ],
+            [ "Label", {
+                location: 0.1,
+                id: "label",
+                cssClass: "aLabel"
+            }]
+        ],
+        Container: "canvas"
+    });
+
+    var basicType = {
+        connector: "StateMachine",
+        paintStyle: { stroke: "red", strokeWidth: 4 },
+        hoverPaintStyle: { stroke: "blue" },
+        overlays: [
+            "Arrow"
+        ]
     };
+    instance.registerConnectionType("basic", basicType);
+
+
+
+
+
+    // this is the paint style for the connecting lines..
+    var connectorPaintStyle = {
+            strokeWidth: 2,
+            stroke: "#61B7CF",
+            joinstyle: "round",
+            outlineStroke: "white",
+            outlineWidth: 2
+        },
+    // .. and this is the hover style.
+        connectorHoverStyle = {
+            strokeWidth: 3,
+            stroke: "#216477",
+            outlineWidth: 5,
+            outlineStroke: "white"
+        },
+        endpointHoverStyle = {
+            fill: "#216477",
+            stroke: "#216477"
+        },
+    // the definition of source endpoints (the small blue ones)
+        sourceEndpoint = {
+            endpoint: "Dot",
+            paintStyle: {
+                stroke: "#7AB02C",
+                fill: "transparent",
+                radius: 7,
+                strokeWidth: 1
+            },
+            isSource: true,
+            connector: [ "Flowchart", { stub: [40, 60], gap: 10, cornerRadius: 5, alwaysRespectStubs: true } ],
+            connectorStyle: connectorPaintStyle,
+            hoverPaintStyle: endpointHoverStyle,
+            connectorHoverStyle: connectorHoverStyle,
+            dragOptions: {},
+            overlays: [
+                [ "Label", {
+                    location: [0.5, 1],
+                    label: "Drag",
+                    cssClass: "endpointSourceLabel",
+                    visible:false
+                } ]
+            ]
+        },
+    // the definition of target endpoints (will appear when the user drags a connection)
+        targetEndpoint = {
+            endpoint: "Dot",
+            paintStyle: { fill: "#7AB02C", radius: 7 },
+            hoverPaintStyle: endpointHoverStyle,
+            maxConnections: -1,
+            dropOptions: { hoverClass: "hover", activeClass: "active" },
+            isTarget: true,
+            overlays: [
+                [ "Label", { location: [0.5, -0.5], label: "Drop", cssClass: "endpointTargetLabel", visible:false } ]
+            ]
+        };
+
+
+    jsPlumb.addEndpoint($(".columns"), {
+        anchors: [1.01, 0.3, 0, 0],
+        //cssClass:"redLine",
+        //paintStyle:{ fill:"red",strokeWidth:1 }
+    }, sourceEndpoint);
 
 
 
     jsPlumb.addEndpoint($(".columns"), {
-        anchors: "Right"
-    }, common);
-
-    jsPlumb.addEndpoint($(".columns"), {
-        anchor: "Left"
-    }, common);
+        anchors: [0, 0.3, 0, 0],
+    }, targetEndpoint);
 
 
     jsPlumb.bind("connection", function(info) {
