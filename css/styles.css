@@ -26,6 +26,15 @@ fieldset label, input, select {
 
 }
 
+#logo {
+    position: relative;
+    display: inline-block;
+    padding-top: 25px;
+    font-weight: 500;
+    font-size: large;
+    color: white;
+}
+
 /*
  * Footer
  */
@@ -80,6 +89,7 @@ fieldset label, input, select {
 .tables {
     position: absolute;
     border: 2px solid gray;
+    border-radius: 5%;
     background: white;
     min-height: 100px;
     min-width: 200px;
@@ -101,12 +111,9 @@ fieldset label, input, select {
     font-size: 12px;
 }
 
-
-
-
 .redLine svg * {
-    fill:red;
-    stroke:yellow;
+    fill: red;
+    stroke: yellow;
 }
 
 .flowchart-demo .jtk-endpoint, .endpointTargetLabel, .endpointSourceLabel {
