@@ -74,6 +74,20 @@ app.controller('mainController', function ($scope) {
         jsPlumb.detachEveryConnection();
     }
 
+    $scope.isPrimaryKey = function(tName, cName) {
+
+        var idx = tableList[tName].primaryKey.indexOf(cName);
+
+        return idx;
+    }
+
+    $scope.isUniqueKey = function(tName, cName) {
+
+        var idx = tableList[tName].uniqueKey.indexOf(cName);
+
+        return idx;
+    }
+
     $scope.displayTable();
 
 

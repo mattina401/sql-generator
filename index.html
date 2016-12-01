@@ -23,8 +23,6 @@
                     data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
             </button>
             <!--
             <a class="navbar-brand" href="#">
@@ -38,12 +36,6 @@
             <ul class="nav navbar-nav">
                 <li>
                     <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Services</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
                 </li>
             </ul>
         </div>
@@ -87,7 +79,9 @@
                     <!-- columns -->
                     <div class="col-sm-12 columns" title={{tableName.tName}}
                          ng-repeat="item in displayColumn(tableName.tName)">
-                        <p class="pull-left">{{item.cName}}: {{item.typeList}}</p>
+                        <p class="pull-left"
+                           ng-style="(isPrimaryKey(tableName.tName,item.cName) > -1) && {'color':'red'} || (isUniqueKey(tableName.tName,item.cName) > -1) && {'color':'blue'}">
+                            {{item.cName}}: {{item.typeList}}</p>
                         <a class="glyphicon glyphicon-minus pull-right" aria-hidden="true"
                            ng-click="deleteColumn(tableName.tName,item.cName)"></a>
                         <a class="glyphicon glyphicon-pencil pull-right" aria-hidden="true" data-toggle="modal"
@@ -101,18 +95,29 @@
 
         </form>
         <div class="" id="controller">
-            <input class="controller-input" id="tableName" type="text" placeholder="table name" ng-model="tableName">
-            <input class="controller-btn" id="add-tbl" type="button" value="ADD TABLE" ng-click="createTable(tableName)">
-            <input class="controller-btn" id="generate" type="button" value="GENERATE" ng-click="generate=!generate ">
-            <!--<input id="test" type="button" value="TEST">-->
-            <input class="controller-btn" type="button" id="jsplumb" value="visible node">
-            <input class="controller-btn" type="button" value="clear node" ng-click="clear()">
+            <input class="controller-input" id="tableName" type="text" placeholder="Table name" ng-model="tableName">
+
+            <!--
+             <input class="controller-btn" id="add-tbl" type="button" value="ADD TABLE"
+                    ng-click="createTable(tableName)">
+             <input class="controller-btn" id="generate" type="button" value="GENERATE" ng-click="generate=!generate ">
+             <input id="test" type="button" value="TEST">
+             <input class="controller-btn" type="button" id="jsplumb" value="VISIBLE NODE">
+             <input class="controller-btn" type="button" value="CLEAR LINE" ng-click="clear()">
+             -->
+            <a href="#" class="button" ng-click="createTable(tableName)">ADD TABLE<i class="icon-chevron-right"></i></a>
+            <a href="#" class="button" ng-click="generate=!generate">GENERATE<i class="icon-chevron-right"></i></a>
+            <a href="#" class="button" id="jsplumb">VISIBLE NODE<i class="icon-chevron-right"></i></a>
+            <a href="#" class="button" ng-click="clear()">CLEAR LINE<i class="icon-chevron-right"></i></a>
+            <div id="instruction">
+                <p><span style="color: red">Column Name:</span> Primary Key</p>
+                <p><span style="color: blue">Column Name:</span> Unique Key</p>
+            </div>
+
         </div>
 
     </div>
 </div>
-
-
 
 
 <!-- query result -->
@@ -271,7 +276,6 @@
         </div>
     </div>
 </div>
-
 
 
 <footer class="blog-footer">
